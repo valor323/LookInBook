@@ -1,1 +1,61 @@
-main.js
+$(document).ready(initializeApp);
+
+function initializeApp(){
+    newYorkTimesAjax();
+}
+
+async function newYorkTimesAjax (){
+    var newYorkTimesParams = {
+      url: "https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?",
+      method: 'GET',
+      data: {
+        'api-key': "EAJZJKpUWUaaG7GFAfAd00tnyinAFTIl"
+      },
+      success: newYorkTimesAjaxSuccessful,
+      error: newYorkTimesAjaxError,
+    }
+    await $.ajax( newYorkTimesParams );
+}
+
+function newYorkTimesAjaxSuccessful(responseData){
+    console.log('success');
+    for(i=0; i<responseData.results.books.length; i++){
+        $('#bookRow').append('<div id="' + responseData.results.books[i].rank + '">').append(responseData.results.books[i].title);
+    }
+    console.log(responseData);
+
+}
+
+function newYorkTimesAjaxError(){
+    console.log('error');
+}
+
+async function retrieveBookInfo(){
+    let googleBooksCall = {
+        url: 'https://www.googleapis.com/books/v1/volumes?',
+        method: 'GET',
+        data: {
+            'api-key': 'AIzaSyAi_F1l9eRkXcRtV1NBCJAnFqwXV-ZtTu0',
+            'q': '',
+            'maxResults': 20,
+            'orderBy': 'relevance',
+            'showPreorders': false,
+        },
+        success: googleBooksAjaxSuccessful,
+        error: googleBooksAjaxError,
+    }
+    await $.ajax(googleBooksCall);        
+}
+
+
+function googleBooksAjaxSuccessful(responseData){
+    console.log('success');
+    console.log(responseData);
+    for(i=0; i<responseData.items.length; i++){
+        $('#bookRow').append('<div>').append(responseData.items[i].volumeInfo.imageLinks.thumbnail);
+    }
+}
+
+function googleBooksAjaxError(){
+    console.log('error');
+}

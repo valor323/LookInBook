@@ -23,6 +23,7 @@ function newYorkTimesAjaxSuccessful(responseData){
         $('#bookRow').append('<div id="' + responseData.results.books[i].rank + '">').append(responseData.results.books[i].title);
     }
     console.log(responseData);
+    retrieveBookInfo(responseData);
 
 }
 
@@ -30,30 +31,28 @@ function newYorkTimesAjaxError(){
     console.log('error');
 }
 
-async function retrieveBookInfo(){
-    let googleBooksCall = {
-        url: 'https://www.googleapis.com/books/v1/volumes?',
-        method: 'GET',
-        data: {
-            'api-key': 'AIzaSyAi_F1l9eRkXcRtV1NBCJAnFqwXV-ZtTu0',
-            'q': '',
-            'maxResults': 20,
-            'orderBy': 'relevance',
-            'showPreorders': false,
-        },
-        success: googleBooksAjaxSuccessful,
-        error: googleBooksAjaxError,
+async function retrieveBookInfo(responseData){
+    for(i=0; i < responseData.results.books.length; i++){
+        let googleBooksCall = {
+            url: 'https://www.googleapis.com/books/v1/volumes?',
+            method: 'GET',
+            data: {
+                'api-key': 'AIzaSyAi_F1l9eRkXcRtV1NBCJAnFqwXV-ZtTu0',
+                'q': responseData.results.books[i].primary_isbn13,
+                'maxResults': 1,
+                'orderBy': 'relevance',
+                'showPreorders': false,
+            },
+            success: googleBooksAjaxSuccessful,
+            error: googleBooksAjaxError,
+        }
+        await $.ajax(googleBooksCall);        
     }
-    await $.ajax(googleBooksCall);        
 }
-
 
 function googleBooksAjaxSuccessful(responseData){
     console.log('success');
     console.log(responseData);
-    for(i=0; i<responseData.items.length; i++){
-        $('#bookRow').append('<div>').append(responseData.items[i].volumeInfo.imageLinks.thumbnail);
-    }
 }
 
 function googleBooksAjaxError(){

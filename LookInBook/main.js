@@ -1,5 +1,9 @@
 $(document).ready(initializeApp);
 
+
+//global variables
+var outside;
+
 function initializeApp(){
     newYorkTimesAjax();
 }
@@ -19,9 +23,9 @@ async function newYorkTimesAjax (){
 
 function newYorkTimesAjaxSuccessful(responseData){
     console.log('success');
-    for(i=0; i<responseData.results.books.length; i++){
-        $('#bookRow').append('<div id="' + responseData.results.books[i].rank + '">').append(responseData.results.books[i].title);
-    }
+    // for(i=0; i<responseData.results.books.length; i++){
+    //     $('#bookRow').append('<div id="' + responseData.results.books[i].rank + '">').append(responseData.results.books[i].title);
+    // }
     console.log(responseData);
     retrieveBookInfo(responseData);
 
@@ -53,6 +57,8 @@ async function retrieveBookInfo(responseData){
 function googleBooksAjaxSuccessful(responseData){
     console.log('success');
     console.log(responseData);
+    let image = responseData.items[0].volumeInfo.imageLinks.thumbnail;
+    $('#bookRow').append("<img src ='" + image + "'>")
 }
 
 function googleBooksAjaxError(){
